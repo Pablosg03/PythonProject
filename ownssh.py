@@ -3,12 +3,28 @@ import threading
 import os
 
 def load_key(file_path):
+    """
+    Load an RSA key from a file, removing any unnecessary lines.
+
+    Args:
+        file_path (str): Path to the key file.
+    
+    Returns:
+        str: The key as a string.
+    """
     with open(file_path, "r") as f:
         lines = f.readlines()
-        key_lines = [line.strip() for line in lines if "RSA PRIVATE KEY" not in line and "RSA PUBLIC KEY" not in line and "-----" not in line]
+        key_lines = [line.strip() for line in lines if "RSA PRIVATE KEY" not in line and 
+                     "RSA PUBLIC KEY" not in line and "-----" not in line]
         return "".join(key_lines)
     
 def server(public_keys):
+    """
+    Start the server, authenticate clients, and handle commands.
+
+    Args:
+        public_keys (list): List of accepted public keys.
+    """
     HOST = "0.0.0.0"
     PORT = 1234
 
@@ -18,6 +34,13 @@ def server(public_keys):
     print(f"Server started. Listening on {HOST}:{PORT}")
 
     def handle_client(client_socket, client_address):
+        """
+        Handle communication with a connected client.
+
+        Args:
+            client_socket (socket): The client's socket object.
+            client_address (tuple): The client's address (IP, port)
+        """
         print(f"Connection established with {client_address}")
 
         client_public_key = client_socket.recv(1024).decode()
@@ -64,6 +87,13 @@ def server(public_keys):
 
 
 def client(ip, private_key_path):
+    """
+    Connect to the server and send commands.
+
+    Args:
+        ip (str): The server's IP address.
+        private_key_path (str): Path to the client's private key file.
+    """
     HOST = ip
     PORT = 1234
 
